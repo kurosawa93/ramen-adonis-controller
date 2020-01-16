@@ -1,0 +1,23 @@
+{
+  "name": "ramen-adonis-controller",
+  "version": "0.0.1",
+  "description": "part of ramen package which handle basic crud and file request",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ramen",
+    "adonisjs",
+    "ramen-adonis"
+  ],
+  "author": "Rachmat Priambudi",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@adonisjs/ace": "^5.0.8",
+    "@adonisjs/fold": "^4.0.9"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^4.2.0"
+  }
+}
