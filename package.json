@@ -17,6 +17,10 @@
     "@adonisjs/ace": "^5.0.8",
     "@adonisjs/fold": "^4.0.9"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kurosawa93/ramen-adonis-controller"
+  },
   "dependencies": {
     "@google-cloud/storage": "^4.2.0"
   }
