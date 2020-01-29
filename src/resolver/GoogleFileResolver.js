@@ -14,8 +14,8 @@ class GoogleFileResolver {
         this.bucket = storage.bucket(this.bucketName)
     }
 
-    static createFileStream(contentType) {
-        let fileData = this.bucket.file(objectName)
+    createFileStream(contentType, fileName) {
+        let fileData = this.bucket.file(fileName)
         let fileStream = fileData.createWriteStream({
             metadata: {
                 contentType: contentType
@@ -26,11 +26,11 @@ class GoogleFileResolver {
         return fileStream
     }
 
-    static createFileName(type, name) {
+    createFilename(type, name) {
         return type + '/' + Date.now() + '-' + name
     }
 
-    static getPublicUrl(filename) {
+    getPublicUrl(filename) {
         return 'https://storage.googleapis.com/' + this.bucketName + '/' + filename
     }
 }
