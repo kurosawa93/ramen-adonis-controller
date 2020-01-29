@@ -3,13 +3,9 @@
 const FileProvider = use('Ramen/FileProvider')
 
 class RamenFileController {
-    constructor() {}
-
     async uploadFile({request, response}) {
         response.implicitEnd = false
         let extnames = []
-        let fileName = null
-        let fileStream = null
 
         if (request.input('extnames')) {
             extnames = request.input('extnames').split(',')
@@ -32,33 +28,32 @@ class RamenFileController {
                         }
                     })
                 }
-
-                fileStream = FileProvider.createFileStream(file.headers['content-type'])
-                fileName = FileProvider.createFilename(file.type, file.clientName)
+                
+                const fileName = FileProvider.createFilename(file.type, file.clientName)
+                const fileStream = FileProvider.createFileStream(file.headers['content-type'], fileName)
                 file.stream.pipe(fileStream)
+
+                fileStream.on('error', (err) => {
+                    response.status(500).send({
+                        data: null,
+                        meta: {
+                            message: err
+                        }
+                    })
+                })
+        
+                fileStream.on('finish', () => {
+                    return response.status(200).send({
+                        data: {
+                            fileUrl: FileProvider.getPublicUrl(fileName)
+                        },
+                        meta: {
+                            message: 'upload successfull'
+                        }
+                    })
+                })
             }
         ).process()
-
-        fileStream.on('error', (err) => {
-            response.status(500).send({
-                data: null,
-                meta: {
-                    message: err
-                }
-            })
-        })
-
-        fileStream.on('finish', () => {
-            fileName = FileProvider.getPublicUrl(fileName)
-            return response.status(200).send({
-                data: {
-                    fileUrl: fileName
-                },
-                meta: {
-                    message: 'upload successfull'
-                }
-            })
-        })
     }
 }
 
