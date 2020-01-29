@@ -1,6 +1,6 @@
 {
   "name": "ramen-adonis-controller",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "part of ramen package which handle basic crud and file request",
   "main": "index.js",
   "scripts": {
