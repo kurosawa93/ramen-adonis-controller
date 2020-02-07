@@ -3,8 +3,9 @@
 const LocaleUtil = require('../utils/LocaleUtil')
 
 class RamenCrudController {
-    constructor(model) {
+    constructor(model, localeAttributes) {
         this.model = model
+        this.localeAttributes = localeAttributes
     }
 
     async get({ request, response }) {
@@ -25,8 +26,7 @@ class RamenCrudController {
 
     async getWithLocale({request, params, response}) {
         const locale = params.locale
-        let queryParams = request.all()
-        queryParams.locale = locale
+        const queryParams = LocaleUtil.resolveLocaleQuery(locale, this.localeAttributes, request.all())
 
         const data = await this.model.commonQueryBuilder(this.model.query(), queryParams)
         if (data.error.message) {
