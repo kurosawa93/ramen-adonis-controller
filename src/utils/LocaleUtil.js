@@ -11,9 +11,10 @@ class LocaleUtil {
     static resolveLocaleQuery(locale, localeAttributes, queryParams) {
         for (const attribute of localeAttributes) {
             if (queryParams[attribute]) {
-                const queryKey = '{locale->' + locale + "->>'" + attribute + "'}"
-                queryParams[queryKey] = queryParams[attribute]
-                
+                const queryKey = 'json'
+                const queryValue = 'locale.' + locale + '.' + attribute + ':' + queryParams[attribute]
+                queryParams[queryKey] = queryValue
+
                 delete queryParams[attribute]
             }
         }
