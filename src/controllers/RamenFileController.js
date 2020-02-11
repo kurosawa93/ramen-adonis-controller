@@ -6,7 +6,8 @@ class RamenFileController {
     async uploadFile({request, response}) {
         response.implicitEnd = false
         let extnames = []
-
+        const fileNames = []
+        
         if (request.input('extnames')) {
             extnames = request.input('extnames').split(',')
         }
@@ -29,31 +30,43 @@ class RamenFileController {
                     })
                 }
                 
-                const fileName = FileProvider.createFilename(file.type, file.clientName)
-                const fileStream = FileProvider.createFileStream(file.headers['content-type'], fileName)
-                file.stream.pipe(fileStream)
-
-                fileStream.on('error', (err) => {
+                try {
+                    const fileUrl = await FileProvider.createFileStream(file)
+                    fileNames.push(fileUrl)
+                }
+                catch(error) {
                     response.status(500).send({
                         data: null,
                         meta: {
-                            message: err
+                            message: error.message
                         }
                     })
-                })
-        
-                fileStream.on('finish', () => {
-                    return response.status(200).send({
-                        data: {
-                            fileUrl: FileProvider.getPublicUrl(fileName)
-                        },
-                        meta: {
-                            message: 'upload successfull'
-                        }
-                    })
-                })
+                }
             }
-        ).process()
+        )
+
+        await request.multipart.process()
+
+        let result = ''
+        if (fileNames.length === 1) {
+            result = fileNames[0]
+        }
+        else {
+            for (let i = 0; i < fileNames.length; i++) {
+                result += fileNames[i]
+
+                if (i < fileNames.length-1)
+                    result += ','
+            }
+        }
+        return response.status(200).send({
+            data: {
+                imageUrl: result
+            },
+            meta: {
+                message: 'Upload success'
+            }
+        })
     }
 }
 

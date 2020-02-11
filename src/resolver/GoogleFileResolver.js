@@ -14,16 +14,28 @@ class GoogleFileResolver {
         this.bucket = storage.bucket(this.bucketName)
     }
 
-    createFileStream(contentType, fileName) {
-        let fileData = this.bucket.file(fileName)
-        let fileStream = fileData.createWriteStream({
-            metadata: {
-                contentType: contentType
-            },
-            resumable: false,
-            public: true
+    createFileStream(file) {
+        return new Promise((resolve, reject) => {
+            const fileName = this.createFilename(file.type, file.clientName)
+            const contentType = file.headers['content-type']
+            const fileData = this.bucket.file(fileName)
+            const fileStream = fileData.createWriteStream({
+                metadata: {
+                    contentType: contentType
+                },
+                resumable: false,
+                public: true
+            })
+
+            file.stream.pipe(fileStream)
+            fileStream.on('error', (err) => {
+                reject(err)
+            })
+
+            fileStream.on('finish', () => {
+                resolve(this.getPublicUrl(fileName))
+            })
         })
-        return fileStream
     }
 
     createFilename(type, name) {
