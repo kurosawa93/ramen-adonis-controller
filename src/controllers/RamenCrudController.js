@@ -77,7 +77,11 @@ class RamenCrudController {
     }
 
     async create({ request, response }) {
-        const data = await this.model.upsert(request.body)
+        const body = request.body
+        if (request['created_by'])
+            body['created_by'] = request['created_by']
+
+        const data = await this.model.upsert(body)
         if (data.error.message) {
             return response.status(500).send({
                 data: null,
@@ -95,8 +99,10 @@ class RamenCrudController {
     }
 
     async update({ request, params, response }) {
-        let body = request.body
-        body.id = params.id
+        const body = request.body
+        if (request['created_by'])
+            body['created_by'] = request['created_by']
+        body['id'] = params.id
 
         const data = await this.model.upsert(body)
         if (data.error.message) {
@@ -117,6 +123,9 @@ class RamenCrudController {
 
     async upsert({ request, params, response }) {
         const body = request.body
+        if (request['created_by'])
+            body['created_by'] = request['created_by']
+            
         for (const key in params) {
             body[key] = params[key]
         }
