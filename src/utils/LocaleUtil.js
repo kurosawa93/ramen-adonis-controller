@@ -1,8 +1,11 @@
 class LocaleUtil {
-    static getLocaleData(data, locale) {
+    static getLocaleData(data, locale, localeAttributes) {
         const localeData = data.locale[locale]
-        for (const key in localeData) {
-            data[key] = localeData[key]
+        for (const attribute of localeAttributes) {
+            if (localeData[attribute])
+                data[attribute] = localeData[attribute]
+            else
+                data[attribute] = null
         }
         delete data['locale']
         return data
@@ -13,10 +16,7 @@ class LocaleUtil {
             if (queryParams[attribute]) {
                 const queryKey = 'json'
                 const queryValue = 'locale.' + locale + '.' + attribute + ':' + queryParams[attribute]
-                if (queryValue)
-                    queryParams[queryKey] = queryValue
-                else
-                    queryParams[queryKey] = null
+                queryParams[queryKey] = queryValue
 
                 delete queryParams[attribute]
             }
