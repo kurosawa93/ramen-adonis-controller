@@ -13,7 +13,10 @@ class LocaleUtil {
             if (queryParams[attribute]) {
                 const queryKey = 'json'
                 const queryValue = 'locale.' + locale + '.' + attribute + ':' + queryParams[attribute]
-                queryParams[queryKey] = queryValue
+                if (queryValue)
+                    queryParams[queryKey] = queryValue
+                else
+                    queryParams[queryKey] = null
 
                 delete queryParams[attribute]
             }
