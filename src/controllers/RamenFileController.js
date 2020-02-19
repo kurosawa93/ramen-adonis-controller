@@ -5,20 +5,27 @@ const FileProvider = use('Ramen/FileProvider')
 class RamenFileController {
     async uploadFile({request, response}) {
         response.implicitEnd = false
-        let extnames = []
         const fileNames = []
-        
-        if (request.input('extnames')) {
-            extnames = request.input('extnames').split(',')
-        }
+        let extnames = request.input('extnames')
+        let maxSize = request.input('maxsize')
+
+        if (!extnames)
+            extnames = []
+        else
+            extnames = extnames.split(',')
+            
+
+        if (!maxSize)
+            maxSize = '5mb'
 
         request.multipart.file(
             'file',
             {
-                size: '10mb',
+                size: '1mb',
                 extnames: extnames
             },
             async (file) => {
+                file.size = file.stream.byteCount
                 await file.runValidations()
                 const error = file.error()
                 if (error.message) {
